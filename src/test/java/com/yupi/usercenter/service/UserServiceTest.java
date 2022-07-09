@@ -74,4 +74,8 @@ public class UserServiceTest {
         Assertions.assertTrue(l>0);
 
     }
+
+    @Test
+    void doLogin() {
+    }
 }

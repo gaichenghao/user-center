@@ -3,6 +3,8 @@ package com.yupi.usercenter.service;
 import com.yupi.usercenter.model.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 用户服务
 * @author gaich
@@ -10,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2022-07-08 09:35:08
 */
 public interface UserService extends IService<User> {
+
 
 
     /**
@@ -27,5 +30,12 @@ public interface UserService extends IService<User> {
      * @param userPassword 密码
      * @return 返回脱敏信息
      */
-    User doLogin(String userAccount,String userPassword);
+    User userLogin(String userAccount, String userPassword, HttpServletRequest request);
+
+    /**
+     * 用户脱敏
+     * @param user
+     * @return
+     */
+    User getSafeUser(User user);
 }

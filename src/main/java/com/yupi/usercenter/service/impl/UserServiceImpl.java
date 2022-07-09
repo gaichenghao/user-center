@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.yupi.usercenter.contant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户服务实现类
@@ -32,7 +35,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     /**
      * 盐值
      */
-    private final String SALT="yupi";
+    public static final String SALT="yupi";
+
+
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -78,7 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public User doLogin(String userAccount, String userPassword) {
+    public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         //1 校验
         if(StringUtils.isAnyBlank(userAccount,userPassword)){
             return null;
@@ -92,7 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //账户不能包含特殊字符
         String validPattern= "[\\\\u00A0\\\\s\\\"`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“'。，、？]";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
-        if(matcher.find()){
+        if(!matcher.find()){
             return null;
         }
 
@@ -109,8 +114,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.info("user login filed, userAccount match userPassword");
             return null;
         }
-        //3 、记录用户的登录态
-        return user;
+        //3、用户脱敏
+        User safeUser = getSafeUser(user);
+        //4 、记录用户的登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE,user);
+        return safeUser;
+
+    }
+
+    /**
+     * 用户脱敏
+     * @param user
+     * @return
+     */
+    @Override
+    public User getSafeUser(User user){
+        User safeUser=new User();
+        safeUser.setId(user.getId());
+        safeUser.setUsername(user.getUsername());
+        safeUser.setUserAccount(user.getUserAccount());
+        safeUser.setAvatarUrl(user.getAvatarUrl());
+        safeUser.setGender(user.getGender());
+        safeUser.setPhone(user.getPhone());
+        safeUser.setEmail(user.getEmail());
+        safeUser.setUserStatus(user.getUserStatus());
+        safeUser.setCreateTime(user.getCreateTime());
+        safeUser.setUserRole(user.getUserRole());
+        return safeUser;
 
     }
 }
