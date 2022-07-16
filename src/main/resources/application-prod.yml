@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://101.200.164.72:3306/yupi
+    username:
+    password:
+  # session 失效时间
+  session:
+    timeout: 86400
+
+
