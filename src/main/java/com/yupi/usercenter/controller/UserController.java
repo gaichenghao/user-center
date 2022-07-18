@@ -32,6 +32,7 @@ import static com.yupi.usercenter.contant.UserConstant.USER_LOGIN_STATE;
 @RestController
 @RequestMapping("/user")
 @Slf4j
+//@CrossOrigin(origins = {"http://user.code-nav.cn"},allowCredentials = "true")
 public class UserController {
 
 
